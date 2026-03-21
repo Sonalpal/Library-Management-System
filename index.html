@@ -3,9 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Library Management System</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <h2>📚 Library Dashboard</h2>
+        <input type="text" id="search" placeholder="Search books...">
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main">
+
+        <!-- LEFT PANEL (FORM) -->
+        <div class="card form-card">
+            <h3>Add New Book</h3>
+            <div>
+                <span id="totalcount"></span>
+                <span id="issuedCount"></span>
+                <span id="availcount"></span>
+
+            </div>
+            <input class="same" id="titleInput" type="text" placeholder="Book Title">
+            <input class="same" id="authorInput" type="text" placeholder="Author Name">
+
+            <select class="same" id="selectInput">
+                <option>Thriller</option>
+                <option>Suspense</option>
+                <option>Fiction</option>
+                <option>Non-Fiction</option>
+            </select>
+
+            <button id="addBtn">+ Add Book</button>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="card list-card">
+
+            <!-- FILTER BUTTONS -->
+            <div class="filters">
+                <button id="allBtn" class="active">All</button>
+                <button id="issuedBtn">Issued</button>
+                <button id="availBtn">Available</button>
+            </div>
+
+            <!-- BOOK LIST -->
+            <ul id="bookList"></ul>
+
+        </div>
+
+    </div>
+
 </body>
+<script  type="module" src="script.js"></script>
 </html>

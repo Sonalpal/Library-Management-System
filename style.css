@@ -1,0 +1,154 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #eef2f7;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1e293b;
+    color: white;
+    padding: 15px 30px;
+}
+
+.navbar input {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    width: 250px;
+}
+
+/* MAIN LAYOUT */
+.main {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* CARD STYLE */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* LEFT FORM */
+.form-card {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-card h3 {
+    margin-bottom: 10px;
+}
+
+.same {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    transition: 0.2s;
+}
+
+.same:focus {
+    border-color: #3b82f6;
+    outline: none;
+}
+
+/* BUTTON */
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #3b82f6;
+    color: white;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+/* RIGHT PANEL */
+.list-card {
+    width: 70%;
+}
+
+/* FILTER BUTTONS */
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filters button {
+    background: #e2e8f0;
+    color: #333;
+}
+
+.filters button.active {
+    background: #3b82f6;
+    color: white;
+}
+
+/* BOOK LIST */
+#bookList {
+    list-style: none;
+}
+
+/* BOOK ITEM */
+#bookList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+#bookList li:hover {
+    transform: scale(1.01);
+    background: #f1f5f9;
+}
+
+/* TEXT */
+#bookList span {
+    flex: 1;
+    font-size: 14px;
+}
+
+/* ACTION BUTTONS */
+#bookList button {
+    margin-left: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px) {
+    .main {
+        flex-direction: column;
+    }
+
+    .form-card, .list-card {
+        width: 100%;
+    }
+
+    .navbar input {
+        width: 150px;
+    }
+}
