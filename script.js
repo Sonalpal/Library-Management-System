@@ -4,86 +4,125 @@ let TitleInput = document.getElementById("titleInput");
 let AuthorInput = document.getElementById("authorInput");
 let select = document.getElementById("selectInput");
 let AddBtn = document.getElementById("addBtn");
-let list = document.getElementById("bookList");
+let allList = document.getElementById("allBookList");
+let issuedList = document.getElementById("issuedBookList");
+let availableList = document.getElementById("availBookList");
 
-let currentFilter="all";
+
+// OVERDUE LOGIC IS NOT WORKING AND ALSO THE BOOK ARE NOT DISPLAYING IN THE AVAILABLE SECTION
+
+
+
+
+
+
 
 // LOCAL STORAGE
 
 function saveBooks(){
-    console.log("inside save books");
+    console.log("inside save books 2");
     localStorage.setItem("books",JSON.stringify(books));
 }
 
+// CREATE BOOK ITEM
 
+function createBookItem(book,section){
 
+    console.log("inside createBookItem");
+    let li = document.createElement("li");
+    li.style.display="flex";
+    li.style.justifyContent="space-between";
+    li.style.alignItems="center";
 
-// RENDER BOOKS LOGIC
+    let span = document.createElement("span");
+    span.textContent=book.title + " "+ book.author + "("+ book.category + ")";
 
-function renderBooks(){
+    // ADD and MINUS BUTTON
+
+   let qtyContainer = document.createElement("div");
+   qtyContainer.classList.add("qty-box");
+    // qtyContainer.style.gap="8px";
+
+    //minus button
+    let minusBtn = document.createElement("button");
+    minusBtn.textContent="-";
+
+    //TEXT
+    let qtyText = document.createElement("span");
     
-    list.innerHTML="";
-    let filteredBook = books;
-  
-     
-   
-      if(currentFilter==="issued"){
-            filteredBook = filteredBook.filter(element=> element.isIssued);
-        }else if(currentFilter==="available"){
-            filteredBook = filteredBook.filter(element=> !element.isIssued);
-        }
-   
-  
-    filteredBook.forEach(function(book,index){
+    //PLUS BUTTON
+    let PlusBtn = document.createElement("button");
+    PlusBtn.textContent="+";
 
-      
+      if(section==="all"){
+        qtyText.textContent=book.quantity;
+        
+    }else if(section==="issued"){
+         qtyText.textContent=(book.issuedCount);
+    }else if(section==="available"){
+         qtyText.textContent=(book.quantity-book.issuedCount);
+    }
 
-        let li = document.createElement("li");
-        let span = document.createElement("span");
-        span.textContent= book.title+"   "+ book.author+"   "+"("+book.category+")";
-        if(book.isIssued){
-            span.style.textDecoration="line-through";
-            span.textContent+="(Issued)";
+    PlusBtn.addEventListener("click",function(e){
+        e.stopPropagation();
+        book.quantity+=1;
+        saveBooks();
+        renderBooks();
+    });
+    minusBtn.addEventListener("click",function(e){
+        e.stopPropagation();
+        if(book.quantity-book.isIssued>0){
+            book.quantity-=1;
+        }else{
+            alert("Cannot reduce. Some copies are issued");
+            return;
         }
-      // ISSUE BUTTON
-      
+         saveBooks();
+        renderBooks();
+    });
+    
+     qtyContainer.appendChild(PlusBtn);
+ 
+    qtyContainer.appendChild(qtyText);
+       qtyContainer.appendChild(minusBtn);
+   
+
+
+
+        // ISSUE BUTTON
       let issueBtn = document.createElement("button");
       issueBtn.textContent=book.isIssued? "Return":"Issue";
-
+       
       issueBtn.addEventListener("click",function(event){
            event.stopPropagation();
-           book.isIssued = ! book.isIssued;
+           if(book.quantity-book.issuedCount >0 ){
+            let dueDate = prompt("Enter return date :(YYYY-MM-DD)");
+            if(!dueDate) return;
+            
+            book.duedate = dueDate;
+            book.issuedCount+=1;
+            book.isIssued=true;
+            
+           }else{
+               
+               if(book.issuedCount>0){
+                   book.issuedCount-=1;
+               }
+                     if(book.issuedCount===0){
+                          book.isIssued=false;
+                          book.duedate="";
+                       }
+               
+           }
+          
            saveBooks();
            renderBooks();
-      })
-    // QUANTITY BUTTON
+      });
 
-    let Quantity = document.createElement("span");
-    Quantity.textContent= "Qty:"+book.quantity;
-        
-        // DELETE BUTTON
 
-        let delBtn  = document.createElement("button");
-        delBtn.textContent="Delete";
-        delBtn.style.marginRight="10px";
-
-        delBtn.addEventListener("click",function(event){
-            event.stopPropagation();
-            let realIndex = books.indexOf(book);
-
-            if(book.quantity >1){
-                book.quantity-=1;
-            }else{
-                books.splice(realIndex,1);
-            }
-            
-            saveBooks();
-            renderBooks();
-           
-        });
+  
 
         
-
         // EDIT BUTTON
 
         let editBtn = document.createElement("button");
@@ -106,21 +145,130 @@ function renderBooks(){
             saveBooks();
             renderBooks();
         });
-        
-        li.appendChild(span);
-        li.appendChild(Quantity);
-        li.appendChild(issueBtn);
+
+    
+    // DELETE BUTTON
+
+        let delBtn  = document.createElement("button");
+        delBtn.textContent="Delete";
+        delBtn.style.marginRight="10px";
+
+        delBtn.addEventListener("click",function(event){
+            event.stopPropagation();
+            let realIndex = books.indexOf(book);
+
+            if(book.quantity >1){
+                book.quantity-=1;
+            }else{
+                books.splice(realIndex,1);
+            }
+            
+            saveBooks();
+            renderBooks();
+           
+        });
+
+
+
+    if(section ==="issued"){
+        span.style.textDecoration="line-through";
+         // DUE DATE LOGIC
+         
+         let today = new Date();
+
+         let due = document.createElement("span");
+         
+
+        if(book.isIssued && book.duedate){
+            let dueDateObj = new Date(book.duedate);
+            due.textContent="Due:"+book.duedate;
+            due.style.marginRight="10px";
+         // OVERDUE logic
+                 if(dueDateObj<today){
+                     due.style.color="red";
+                   
+                  
+                     const utc1 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+                     const utc2 = Date.UTC(dueDateObj.getFullYear(),dueDateObj.getMonth(), dueDateObj.getDate());
+
+                    const diffMs = Math.abs(utc1 - utc2);
+
+                    let days=Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                    let fine = days*5;
+                    due.textContent+="( Overdue )"+ "fine:  "+fine;
+                    }
+        }else{
+                  due.textContent="";
+         }
+         
+         li.appendChild(span);
+       
+         li.appendChild(due);
+         li.appendChild(issueBtn);
         li.appendChild(editBtn);
-        li.appendChild(delBtn);
-        list.appendChild(li);
+         li.appendChild(delBtn);
+         return li;
+
+       
+    }     
+  
+    li.appendChild(span);
+    
+    li.appendChild(qtyContainer);
+    li.appendChild(issueBtn);
+    li.appendChild(editBtn);
+    li.appendChild(delBtn);
+
+    return li;
+}
+
+
+
+
+// RENDER BOOKS LOGIC
+
+function renderBooks(){
+    console.log("inside render 3");
+
+  
+    allList.innerHTML="";
+    issuedList.innerHTML="";
+    availableList.innerHTML="";
+    
+     if(books.length ===0){
+        allList.textContent="No Books Available";
+        updateStates();
+      
+    }
+   
+    books.forEach(function(book,index){
+        //ALL BOOKS
+        
+        allList.appendChild(createBookItem(book,"all"));
+        
+      //ISSUED BOOKS
+
+        if(book.issuedCount>0){
+            issuedList.appendChild(createBookItem(book,"issued"));
+
+        }
+        //AVAILABLE BOOKS
+        if(book.quantity - book.issuedCount>0){
+            availableList.appendChild(createBookItem(book,"available"));
+        }
+       
     });
+      if(issuedList.innerHTML===""){
+        issuedList.innerHTML="<p>No Books Issued</p>";
+    }
+
+    if(availableList.innerHTML===""){
+        availableList.innerHTML="<p>No Books available</p>";
+    }
+    
   
     updateStates();
-     if(filteredBook.length ===0){
-        list.textContent="No Books Available";
-        updateStates();
-        return;
-    }
+
 
 }
 
@@ -128,16 +276,17 @@ function renderBooks(){
 
 function updateStates(){
        
-    let totalcount = document.getElementById("totalcount");
-    totalcount.textContent="Total Books:   "+ books.length;
+    let totalcount = document.getElementById("allCount");
+  
+    totalcount.textContent=books.length;
 
-    let issueCount = document.getElementById("issuedCount");
-    let count = books.filter(element=> element.isIssued).length;
-    issueCount.textContent=" Issued Books:  "+ count;
+     let issueCount = document.getElementById("issueCount");
+    let count1 =books.reduce((sum , book)=>sum + book.issuedCount,0);
+    issueCount.textContent=count1;
 
-    let availcount = document.getElementById("availcount");
-    let Count = books.filter(element=> !element.isIssued).length;
-    availcount.textContent="Available Books:  "+ Count;
+    let availcount = document.getElementById("availCount");
+     let Count2 = books.reduce((sum,book)=> sum+ (book.quantity - book.issuedCount),0);
+     availcount.textContent=Count2;
 }
 
 
@@ -145,27 +294,33 @@ function updateStates(){
 // ADD BOOK LOGIC
 function addBook(){
 
-   
+   console.log("inside add book 1")
     let title = TitleInput.value.trim();
     let author = AuthorInput.value.trim();
     let category = select.value;
 
+    if(title ==="" || author===""){
+        return ; 
+    }
     
     let existingBook = books.find(function(book){
-       return book.title.toLowerCase()===title.toLowerCase() && book.author.toLowerCase()===author.toLowerCase()
+       return (book.title.toLowerCase()===title.toLowerCase() && book.author.toLowerCase()===author.toLowerCase() && book.category.toLowerCase()===category.toLowerCase())
             
     });
 
     if(existingBook){
         existingBook.quantity+=1;
+       
     }else{
          let book = {
         title:title,
         author:author,
         category:category,
+        issuedCount:0,
         isIssued:false,
          quantity:1
-    };
+         
+       }
      books.push(book);
     }
 
@@ -187,20 +342,19 @@ let search = document.getElementById("search");
 search.addEventListener("input",function(){
  let text = search.value.toLowerCase();
 
- let items= document.querySelectorAll("li");
+ let allItems= document.querySelectorAll("#allBookList li");
 
- items.forEach(element=>{
-
-    let item = element.textContent.toLowerCase();
-
-    if(item.includes(text)){
-        element.style.display="block";
+ allItems.forEach((item)=>{
+    let content = item.textContent.toLowerCase();
+    if(content.includes(text)){
+     item.style.display="flex";
     }else{
-        element.style.display="none";
+        item.style.display="none";
     }
+   })   
       
- })
  });
+
  // RETRIVING FROM LOCAL STORAGE
  let saved = localStorage.getItem("books");
  if(saved){
@@ -219,23 +373,35 @@ search.addEventListener("input",function(){
 }  
     renderBooks();
 
+     // SORTING LOGIC
+
+        document.getElementById("sortTitle").addEventListener("click",function(){
+            books.sort((a,b)=> a.title.localeCompare(b.title));
+            renderBooks();
+        })
+
+        document.getElementById("sortAuthor").addEventListener("click",function(){
+            books.sort((a,b)=> a.author.localeCompare(b.author));
+            renderBooks();
+        })
+
     //FILTER LOGIC
 
-    let allbooks = document.getElementById("allBtn");
-    allbooks.addEventListener("click",function(){
+    // let allbooks = document.getElementById("allBtn");
+    // allbooks.addEventListener("click",function(){
       
-       currentFilter="all";
-       renderBooks();
-    })
+    //    currentFilter="all";
+    //    renderBooks();
+    // })
 
-    let issueBook = document.getElementById("issuedBtn");
-    issueBook.addEventListener("click",function(){
-        currentFilter="issued";
-        renderBooks();
-    })
+    // let issueBook = document.getElementById("issuedBtn");
+    // issueBook.addEventListener("click",function(){
+    //     currentFilter="issued";
+    //     renderBooks();
+    // })
 
-    let available = document.getElementById("availBtn");
-    available.addEventListener("click",function(){
-        currentFilter="available";
-        renderBooks();
-    })
+    // let available = document.getElementById("availBtn");
+    // available.addEventListener("click",function(){
+    //     currentFilter="available";
+    //     renderBooks();
+    // })

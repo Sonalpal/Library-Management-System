@@ -6,7 +6,8 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: #eef2f7;
+    background: #f1f5f9;
+    color: #1e293b;
 }
 
 /* NAVBAR */
@@ -14,34 +15,45 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #1e293b;
-    color: white;
-    padding: 15px 30px;
+    padding: 20px 40px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
 }
 
-.navbar input {
-    padding: 10px;
+.navbar h2 {
+    font-weight: 600;
+}
+
+.search-box input {
+    padding: 10px 15px;
     border-radius: 8px;
-    border: none;
+    border: 1px solid #cbd5e1;
     width: 250px;
+    background: #f8fafc;
+    outline: none;
 }
 
-/* MAIN LAYOUT */
+/* MAIN */
 .main {
     display: flex;
-    gap: 20px;
-    padding: 20px;
+    gap: 25px;
+    padding: 30px;
 }
 
-/* CARD STYLE */
+/* CARDS */
 .card {
-    background: white;
-    border-radius: 12px;
+    background: #ffffff;
+    border-radius: 14px;
     padding: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    transition: 0.2s;
 }
 
-/* LEFT FORM */
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* FORM */
 .form-card {
     width: 30%;
     display: flex;
@@ -49,97 +61,132 @@ body {
     gap: 15px;
 }
 
-.form-card h3 {
-    margin-bottom: 10px;
+/* STATS */
+.stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 8px;
 }
 
+/* INPUT */
 .same {
     padding: 12px;
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #cbd5e1;
+    outline: none;
+    background: #f8fafc;
     transition: 0.2s;
 }
 
 .same:focus {
-    border-color: #3b82f6;
-    outline: none;
+    border-color: #0ea5e9;
 }
 
 /* BUTTON */
 button {
-    padding: 12px;
+    padding: 10px 14px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background: #3b82f6;
+    background: #0ea5e9;
     color: white;
     font-weight: 500;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 
 button:hover {
-    background: #2563eb;
+    background: #0284c7;
 }
 
-/* RIGHT PANEL */
+/* LIST CARD */
 .list-card {
     width: 70%;
 }
 
-/* FILTER BUTTONS */
-.filters {
+.header-row {
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
+/* FILTER BUTTONS */
 .filters button {
     background: #e2e8f0;
-    color: #333;
+    color: #1e293b;
 }
 
-.filters button.active {
-    background: #3b82f6;
-    color: white;
+.filters button:hover {
+    background: #cbd5e1;
 }
 
-/* BOOK LIST */
-#bookList {
+/* LIST */
+ul {
     list-style: none;
 }
 
 /* BOOK ITEM */
-#bookList li {
+ul li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #f8fafc;
     padding: 15px;
     margin-bottom: 10px;
     border-radius: 10px;
-    transition: 0.3s;
+    background: #f8fafc;
+    transition: 0.2s;
 }
 
-#bookList li:hover {
-    transform: scale(1.01);
-    background: #f1f5f9;
+ul li:hover {
+    background: #e2e8f0;
 }
 
-/* TEXT */
-#bookList span {
-    flex: 1;
+/* 🛒 QUANTITY CONTROL (IMPORTANT) */
+.qty-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.qty-box button {
+    background: #e2e8f0;
+    color: #1e293b;
+    border: none;
+    padding: 6px 12px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.qty-box button:hover {
+    background: #cbd5e1;
+}
+
+.qty-box span {
+    padding: 6px 14px;
+    min-width: 30px;
+    text-align: center;
     font-size: 14px;
 }
 
-/* ACTION BUTTONS */
-#bookList button {
-    margin-left: 8px;
-    padding: 6px 10px;
-    font-size: 12px;
+/* LOWER SECTION */
+#thirdDiv {
+    display: flex;
+    gap: 20px;
+    padding: 20px 30px;
+}
+
+.small-card {
+    flex: 1;
 }
 
 /* RESPONSIVE */
-@media(max-width: 768px) {
+@media(max-width: 900px) {
     .main {
         flex-direction: column;
     }
@@ -148,7 +195,7 @@ button:hover {
         width: 100%;
     }
 
-    .navbar input {
-        width: 150px;
+    #thirdDiv {
+        flex-direction: column;
     }
 }
