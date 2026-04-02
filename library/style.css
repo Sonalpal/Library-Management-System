@@ -32,6 +32,15 @@ body {
     background: #f8fafc;
     outline: none;
 }
+/* .search-box{
+    display: flex;
+    justify-content:space-around;
+    align-items: center;
+} */
+.userEmail{
+    font-weight: bold;
+    margin-right: 10px;
+}
 
 /* MAIN */
 .main {
