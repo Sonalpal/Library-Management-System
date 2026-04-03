@@ -1,14 +1,15 @@
 // Handle Register click
-const registerLink = document.getElementById("registerLink");
+import { auth, db } from "../firebase.js";
 
-if (registerLink) {
-    registerLink.addEventListener("click", function () {
-        // Optional: you can add animation or log
-        console.log("Redirecting to signup page...");
-    });
-}
-
-// OPTIONAL: Auto redirect if already logged in
-if (localStorage.getItem("isLoggedIn") === "true") {
-    window.location.href = "login/login.html";
-}
+import {
+  collection,
+  addDoc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  setDoc,
+  doc,
+  query,
+  where,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+const registerLink = document.getElementById("signupBtn");

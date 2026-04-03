@@ -1,83 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Library Management System</title>
-    <link rel="stylesheet" href="style.css">
-    
+    <link rel="stylesheet" href="style.css" />
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body style="display:none;">
-
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <!-- NAVBAR -->
     <header class="navbar">
-        <h2>📚 Library Dashboard</h2>
-        <div class="search-box">
-            <span id="userEmail"></span>
-            <button id="logOut">LOG OUT</button>
-            <input type="text" id="search" placeholder="Search books...">
-        </div>
+      <h2>📚 Library Dashboard</h2>
+      <div class="search-box">
+        <span id="userEmail"></span>
+        <button id="logOut">LOG OUT</button>
+        <input type="text" id="search" placeholder="Search books..." />
+      </div>
     </header>
 
     <!-- MAIN -->
     <div class="main">
+      <!-- FORM -->
+      <div class="card form-card">
+        <h3>Add New Book</h3>
 
-        <!-- FORM -->
-        <div class="card form-card">
-            <h3>Add New Book</h3>
-
-            <div class="stats">
-                <span>Total: <b id="allCount"></b></span>
-                <span>Issued: <b id="issueCount"></b></span>
-                <span>Available: <b id="availCount"></b></span>
-            </div>
-
-            <input class="same" id="titleInput" type="text" placeholder="Book Title">
-            <input class="same" id="authorInput" type="text" placeholder="Author Name">
-
-            <select class="same" id="selectInput">
-                <option>Thriller</option>
-                <option>Suspense</option>
-                <option>Fiction</option>
-                <option>Non-Fiction</option>
-            </select>
-
-            <button id="addBtn">+ Add Book</button>
+        <div class="stats">
+          <span>Total: <b id="allCount"></b></span>
+          <span>Issued: <b id="issueCount"></b></span>
+          <span>Available: <b id="availCount"></b></span>
         </div>
 
-        <!-- ALL BOOKS -->
-        <div class="card list-card">
-            <div class="header-row">
-                <h3>All Books</h3>
+        <input
+          class="same"
+          id="titleInput"
+          type="text"
+          placeholder="Book Title"
+        />
+        <input
+          class="same"
+          id="authorInput"
+          type="text"
+          placeholder="Author Name"
+        />
 
-                <div class="filters">
-                    <button id="sortTitle">Sort by Title</button>
-                    <button id="sortAuthor">Sort by Author</button>
-                </div>
-            </div>
+        <select class="same" id="selectInput">
+          <option>Thriller</option>
+          <option>Suspense</option>
+          <option>Fiction</option>
+          <option>Non-Fiction</option>
+        </select>
 
-            <ul id="allBookList"></ul>
+        <button id="addBtn">+ Add Book</button>
+      </div>
+
+      <!-- ALL BOOKS -->
+      <div class="card list-card">
+        <div class="header-row">
+          <h3>All Books</h3>
+
+          <div class="filters">
+            <button id="sortTitle">Sort by Title</button>
+            <button id="sortAuthor">Sort by Author</button>
+          </div>
         </div>
+
+        <ul id="allBookList"></ul>
+      </div>
     </div>
 
     <!-- LOWER SECTION -->
     <div id="thirdDiv">
+      <div class="card small-card">
+        <h3>Issued Books</h3>
+        <ul id="issuedBookList"></ul>
+      </div>
 
-        <div class="card small-card">
-            <h3>Issued Books</h3>
-            <ul id="issuedBookList"></ul>
-        </div>
-
-        <div class="card small-card">
-            <h3>Available Books</h3>
-            <ul id="availBookList"></ul>
-        </div>
-
+      <div class="card small-card">
+        <h3>Available Books</h3>
+        <ul id="availBookList"></ul>
+      </div>
     </div>
-<script type="module" src="main.js"></script>
-</body>
-
+    <script type="module" src="main.js"></script>
+  </body>
 </html>

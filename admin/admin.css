@@ -1,0 +1,70 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #1e1e2f, #2b5876);
+  color: white;
+  margin: 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: #111;
+}
+
+.add-book {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.add-book input,
+.add-book select {
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+#addBtn {
+  background: #4caf50;
+  color: white;
+}
+
+.book-container {
+  width: 80%;
+  margin: auto;
+}
+
+li {
+  background: #222;
+  margin: 10px 0;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 8px;
+}
+
+.btn-group button {
+  margin-left: 8px;
+}
+
+.edit {
+  background: orange;
+}
+
+.delete {
+  background: red;
+  color: white;
+}
+
+.qty {
+  background: #555;
+}
