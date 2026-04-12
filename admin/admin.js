@@ -6,7 +6,6 @@ import {
   getDocs,
   updateDoc,
   deleteDoc,
-  doc,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 import {
@@ -22,14 +21,30 @@ let bookList = document.getElementById("bookList");
 
 // ================= AUTH =================
 
-onAuthStateChanged(auth, (user) => {
+import {
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "../login/login.html";
-  } else {
-    document.getElementById("adminEmail").textContent = user.email;
-    document.body.style.display = "block";
-    loadBooks();
+    return;
   }
+
+  let userRef = doc(db, "users", user.uid);
+  let snap = await getDoc(userRef);
+
+  if (!snap.exists() || snap.data().role !== "admin") {
+    alert("Access denied");
+    window.location.href = "../user/user.html";
+    return;
+  }
+
+  document.getElementById("adminEmail").textContent = user.email.split("@")[0];
+  document.body.style.display = "block";
+
+  loadBooks();
 });
 
 // ================= LOGOUT =================

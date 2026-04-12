@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Library Dashboard</title>
+    <link rel="stylesheet" href="user.css" />
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <header class="navbar">
+      <h2>📚 User Dashboard</h2>
+
+      <div class="nav-right">
+        <input type="text" id="search" placeholder="Search books..." />
+        <span id="userEmail"></span>
+        <button id="logOut">Logout</button>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <div class="container">
+      <!-- ALL BOOKS -->
+      <div class="card">
+        <h3>All Books</h3>
+        <ul id="allBookList"></ul>
+      </div>
+
+      <!-- LOWER SECTION -->
+      <div class="row">
+        <div class="card">
+          <h3>Issued Books</h3>
+          <ul id="issuedBookList"></ul>
+        </div>
+
+        <div class="card">
+          <h3>Available Books</h3>
+          <ul id="availBookList"></ul>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="user.js"></script>
+  </body>
+</html>

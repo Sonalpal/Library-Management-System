@@ -19,10 +19,23 @@ body {
   border-bottom: 1px solid #334155;
 }
 
+.navbar h2 {
+  margin: 0;
+}
+
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+}
+
+/* SEARCH */
+#search {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: white;
 }
 
 /* BUTTON */
@@ -39,12 +52,17 @@ button:hover {
   background: #4f46e5;
 }
 
+button:disabled {
+  background: #475569;
+  cursor: not-allowed;
+}
+
 /* CONTAINER */
 .container {
   padding: 20px;
 }
 
-/* CARD */
+/* CARDS */
 .card {
   background: #1e293b;
   padding: 20px;
@@ -52,20 +70,14 @@ button:hover {
   margin-bottom: 20px;
 }
 
-/* FORM */
-.form-row {
+/* ROW */
+.row {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 20px;
 }
 
-input,
-select {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #334155;
-  background: #0f172a;
-  color: white;
+.row .card {
+  flex: 1;
 }
 
 /* LIST */
@@ -74,6 +86,7 @@ ul {
   padding: 0;
 }
 
+/* LIST ITEM */
 li {
   display: flex;
   justify-content: space-between;
@@ -84,28 +97,7 @@ li {
   margin-bottom: 10px;
 }
 
-/* BUTTON GROUP */
-.btn-group button {
-  margin-left: 6px;
-}
-
-/* SPECIAL BUTTONS */
-.edit {
-  background: #f59e0b;
-}
-
-.edit:hover {
-  background: #d97706;
-}
-
-.delete {
-  background: #ef4444;
-}
-
-.delete:hover {
-  background: #dc2626;
-}
-
-.qty {
-  background: #334155;
+/* USER EMAIL */
+#userEmail {
+  font-weight: bold;
 }

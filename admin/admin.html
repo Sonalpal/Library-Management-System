@@ -2,35 +2,43 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel</title>
     <link rel="stylesheet" href="admin.css" />
   </head>
   <body style="display: none">
-    <nav class="navbar">
-      <h2>📚 Admin Panel</h2>
-      <div>
+    <!-- NAVBAR -->
+    <header class="navbar">
+      <h2>📚 Admin Dashboard</h2>
+
+      <div class="nav-right">
         <span id="adminEmail"></span>
         <button id="logoutBtn">Logout</button>
       </div>
-    </nav>
+    </header>
 
-    <!-- ADD BOOK -->
-    <div class="add-book">
-      <input type="text" id="titleInput" placeholder="Book Title" />
-      <input type="text" id="authorInput" placeholder="Author" />
-      <select id="categoryInput">
-        <option value="Fiction">Fiction</option>
-        <option value="Tech">Tech</option>
-        <option value="Education">Education</option>
-      </select>
-      <button id="addBtn">Add Book</button>
-    </div>
+    <!-- MAIN -->
+    <div class="container">
+      <!-- ADD BOOK -->
+      <div class="card add-section">
+        <h3>Add Book</h3>
 
-    <!-- BOOK LIST -->
-    <div class="book-container">
-      <h3>All Books</h3>
-      <ul id="bookList"></ul>
+        <div class="form-row">
+          <input type="text" id="titleInput" placeholder="Book title" />
+          <input type="text" id="authorInput" placeholder="Author" />
+          <select id="categoryInput">
+            <option value="Fiction">Fiction</option>
+            <option value="Tech">Tech</option>
+            <option value="Education">Education</option>
+          </select>
+          <button id="addBtn">Add</button>
+        </div>
+      </div>
+
+      <!-- BOOK LIST -->
+      <div class="card">
+        <h3>All Books</h3>
+        <ul id="bookList"></ul>
+      </div>
     </div>
 
     <script type="module" src="admin.js"></script>

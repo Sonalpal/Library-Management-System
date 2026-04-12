@@ -2,11 +2,11 @@ import { auth, db } from "../firebase.js";
 
 import {
   collection,
-  addDoc,
   getDocs,
   getDoc,
   updateDoc,
   deleteDoc,
+  addDoc,
   doc,
   query,
   where,
@@ -16,11 +16,6 @@ import {
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-let TitleInput = document.getElementById("titleInput");
-let AuthorInput = document.getElementById("authorInput");
-let select = document.getElementById("selectInput");
-let AddBtn = document.getElementById("addBtn");
 
 let allList = document.getElementById("allBookList");
 let issuedList = document.getElementById("issuedBookList");
@@ -35,56 +30,25 @@ onAuthStateChanged(auth, async (user) => {
     window.location.href = "../login/login.html";
   } else {
     let userRef = doc(db, "users", user.uid);
-    let userSnap = await getDoc(userRef);
+    let snap = await getDoc(userRef);
 
-    let role = userSnap.data().role;
-
-    if (role === "admin") {
-      document.getElementById("adminPage").style.display = "block";
-      document.getElementById("userEmail").textContent =
-        "👤 " + user.email.split("@")[0];
+    if (!snap.exists()) {
+      alert("User not found");
+      return;
     }
 
-    // document.body.style.display = "block";
+    document.getElementById("userEmail").textContent =
+      "👤 " + user.email.split("@")[0];
+
     loadBooks();
   }
 });
 
 // ================= LOGOUT =================
 
-let logoutBtn = document.getElementById("logOut");
-
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "../login/login.html";
-  });
-}
-
-// ================= ADD BOOK =================
-
-AddBtn.addEventListener("click", async () => {
-  let title = TitleInput.value.trim();
-  let author = AuthorInput.value.trim();
-  let category = select.value;
-
-  if (!title || !author) {
-    alert("Fill all fields");
-    return;
-  }
-
-  await addDoc(collection(db, "books"), {
-    title,
-    author,
-    category,
-    quantity: 1,
-    issuedCount: 0,
-  });
-
-  TitleInput.value = "";
-  AuthorInput.value = "";
-
-  loadBooks();
+document.getElementById("logOut").addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "../login/login.html";
 });
 
 // ================= LOAD BOOKS =================
@@ -102,7 +66,6 @@ async function loadBooks() {
   });
 
   renderBooks();
-  updateStates();
   loadIssuedBooks();
 }
 
@@ -113,7 +76,7 @@ async function loadIssuedBooks() {
 
   let q = query(
     collection(db, "issuedBooks"),
-    where("userId", "==", auth.currentUser.uid), // ✅ FIXED FIELD NAME
+    where("userId", "==", auth.currentUser.uid),
   );
 
   let snapshot = await getDocs(q);
@@ -127,12 +90,13 @@ async function loadIssuedBooks() {
     let data = docSnap.data();
 
     let book = {
-      id: data.bookId, // ✅ book id
-      issuedDocId: docSnap.id, // ✅ needed for return
+      id: data.bookId,
+      issuedDocId: docSnap.id,
       title: data.title,
       author: data.author,
       category: data.category,
       issuedCount: 1,
+      duedate: data.duedate,
     };
 
     issuedList.appendChild(createBookItem(book, "issued"));
@@ -157,35 +121,68 @@ function renderBooks() {
     availableList.innerHTML = "<p>No Books Available</p>";
   }
 }
+// ================= OVERDUE LOGIC =================
+
+function getFineInfo(dueDateStr) {
+  if (!dueDateStr) return null;
+
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let dueDate = new Date(dueDateStr);
+
+  if (dueDate >= today) {
+    return {
+      overdue: false,
+      text: "Due: " + dueDateStr,
+    };
+  }
+
+  // calculate days late
+  let diffMs = today - dueDate;
+  let days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  let fine = days * 5;
+
+  return {
+    overdue: true,
+    text: `Overdue by ${days} days | Fine: ₹${fine}`,
+  };
+}
 
 // ================= CREATE ITEM =================
 
 function createBookItem(book, section) {
   let li = document.createElement("li");
-
   li.style.display = "flex";
   li.style.justifyContent = "space-between";
 
   let span = document.createElement("span");
-  span.textContent = `${book.title} ${book.author} (${book.category})`;
+  span.textContent = `${book.title} - ${book.author} (${book.category})`;
 
-  let issueBtn = document.createElement("button");
+  let btn = document.createElement("button");
 
-  // ❌ OLD: based on issuedCount
-  // ✅ FIX: based on section
-  issueBtn.textContent = section === "issued" ? "Return" : "Issue";
+  // 🔁 BUTTON TEXT
+  if (section === "issued") {
+    btn.textContent = "Return";
+  } else {
+    btn.textContent = "Issue";
+  }
 
-  issueBtn.addEventListener("click", async (e) => {
-    e.stopPropagation();
+  // ❌ Disable if not available
+  if (section !== "issued" && book.quantity - (book.issuedCount || 0) <= 0) {
+    btn.disabled = true;
+    btn.textContent = "Unavailable";
+  }
 
+  // ================= CLICK =================
+
+  btn.addEventListener("click", async () => {
     try {
       let bookRef = doc(db, "books", book.id);
 
-      // ================= RETURN =================
+      // 🔁 RETURN
       if (section === "issued") {
-        // ❌ OLD: wrong query + wrong id
-        // ✅ FIX: direct delete using issuedDocId
-
         await deleteDoc(doc(db, "issuedBooks", book.issuedDocId));
 
         await updateDoc(bookRef, {
@@ -193,15 +190,23 @@ function createBookItem(book, section) {
         });
       }
 
-      // ================= ISSUE =================
+      // 📚 ISSUE
       else {
+        // ❌ Check availability
         if (book.quantity - (book.issuedCount || 0) <= 0) {
           alert("No copies available");
           return;
         }
+        dateInput.style.display = "block";
+        let dueDate = dateInput.value;
 
-        let dueDate = prompt("Enter return date (YYYY-MM-DD)");
-        if (!dueDate) return;
+        // ❌ Check date selected
+        console.log("outside date");
+        if (!dueDate) {
+          console.log("inside date");
+          alert("Please select a return date");
+          return;
+        }
 
         await updateDoc(bookRef, {
           issuedCount: (book.issuedCount || 0) + 1,
@@ -223,48 +228,45 @@ function createBookItem(book, section) {
     }
   });
 
-  // ================= DELETE =================
+  li.appendChild(span);
+  // 📅 DUE DATE DISPLAY
+  if (section === "issued") {
+    let info = getFineInfo(book.duedate);
 
-  let delBtn = document.createElement("button");
-  delBtn.textContent = "Delete";
+    let dueSpan = document.createElement("span");
 
-  delBtn.addEventListener("click", async (e) => {
-    e.stopPropagation();
+    if (info) {
+      dueSpan.textContent = info.text;
+      dueSpan.style.marginLeft = "10px";
 
-    // ❌ OLD: no return
-    if ((book.issuedCount || 0) > 0) {
-      alert("Cannot delete issued book");
-      return; // ✅ FIXED
+      // 🔴 highlight overdue
+      if (info.overdue) {
+        dueSpan.style.color = "red";
+        dueSpan.style.fontWeight = "bold";
+      } else {
+        dueSpan.style.color = "#22c55e"; // green
+      }
     }
 
-    await deleteDoc(doc(db, "books", book.id));
-    loadBooks();
-  });
+    li.appendChild(dueSpan);
+  }
+  //date logic
+  let dateInput = document.createElement("input");
+  dateInput.type = "date";
+  dateInput.style.marginRight = "8px";
+  dateInput.style.display = "none";
 
-  li.appendChild(span);
-  li.appendChild(issueBtn);
-  li.appendChild(delBtn);
+  // set minimum date (today)
+  let today = new Date().toISOString().split("T")[0];
+  dateInput.min = today;
+
+  // ONLY show for issue (not return)
+  if (section !== "issued") {
+    li.appendChild(dateInput);
+  }
+  li.appendChild(btn);
 
   return li;
-}
-
-// ================= COUNTS =================
-
-function updateStates() {
-  document.getElementById("allCount").textContent = books.reduce(
-    (sum, b) => sum + b.quantity,
-    0,
-  );
-
-  document.getElementById("issueCount").textContent = books.reduce(
-    (sum, b) => sum + (b.issuedCount || 0),
-    0,
-  );
-
-  document.getElementById("availCount").textContent = books.reduce(
-    (sum, b) => sum + (b.quantity - (b.issuedCount || 0)),
-    0,
-  );
 }
 
 // ================= SEARCH =================
